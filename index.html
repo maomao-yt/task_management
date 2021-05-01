@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>タスク管理</title>
+  <link rel="stylesheet" href="css/jkanban.min.css">
+  <script src="js/jkanban.min.js"></script>
+  <style>
+    #download {
+      display: none;
+      width:100px;
+      margin: 15px;
+      text-align: center;
+      border: 1px solid #aaa;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <form name="wrap">
+    <input type="button" name="new" value="新規作成"/>
+    <input type="file" name="import"/>
+  </form>
+  <a id="download" download="sample.json">ダウンロード</a>
+
+  <div id="kanban"></div>
+  <script>
+    const data = [
+      {id:'board-0',title:'タスク'},
+      {id:'board-1',title:'進行中'},
+      {id:'board-2',title:'完了'}
+    ];
+    let taskid = 0;
+
+    document.forms.wrap.new.addEventListener('click',createKanban);
+    document.forms.wrap.import.addEventListener('change',importFile);
+    document.getElementById('download').addEventListener('click',downloadJSON);
+
+    function createKanban(){
+      
+    }
+
+    function importFile(){}
+
+    function downloadJSON(){}
+
+    const kanban = new jKanban({
+      element:'#kanban',
+      boards: data,
+      itemAddOptions:{
+        enabled:true,
+        content:'追加'
+      },
+      click: element => kanban.removeElement(element.dataset.eid),
+      buttonClick:(element,id) =>addTask(id)
+    });
+
+    function addTask(id){
+      const task = document.createElement('input');
+
+      kanban.addForm(id,task);
+      task.focus();
+
+//入力した文字を看板ボードに追加   
+      task.addEventListener('blur', e=>{
+        kanban.addElement(id,{id:`item-${taskid++}`,title:e.target.value});
+        task.remove();
+      })
+    }
+  </script>
+   
+</body>
+</html>
